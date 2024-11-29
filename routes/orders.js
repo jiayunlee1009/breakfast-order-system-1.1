@@ -1,7 +1,7 @@
 const express = require("express");
-const { body, validationResult } = require("express-validator");
+require("express-validator");
 const router = express.Router();
-const db = require("../db"); // 假設已經有資料庫設定模組
+const db = require("../db.js"); // 假設已經有資料庫設定模組
 
 // 建立新訂單
 // router.post(
