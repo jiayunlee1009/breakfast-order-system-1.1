@@ -2,9 +2,9 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const ordersRouter = require("./routes/orders");
-const db = require("./db"); // 假設已經有資料庫設定模組
-const connection = require("./db");
+const mysql = require('mysql2/promise');
+require('dotenv').config();
+// const connection = require("./db.js");
 
 
 const app = express();
@@ -17,11 +17,18 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
+// Connecting to MySQL
+const connectionConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306,
+};
+
 // 設定靜態檔案的根目錄
 app.use(express.static(path.join(__dirname, "public")));
 
-// 掛載 /api/orders 路由
-// app.use("/api/orders", ordersRouter);
 
 app.post("/test",
   // [
@@ -34,36 +41,30 @@ app.post("/test",
   async (req, res) => {
     // 驗證請求資料
 
-    const { customerName, contact, pickupTime, orderItems } = req.body;
+    const { customerName, contact, pickupTime } = req.body;
 
     console.log("============")
     console.log("req.body", req.body)
 
     try {
-      // 插入訂單資料到資料庫
-      // const [customerName, contact, pickupTime] = await connection.query(
-      //   "INSERT INTO 'orders' ('customerName', 'contact', 'pickupTime') VALUES (?, ?, ?)",
-      //   [customerName, contact, pickupTime]
-      // );
-      // console.log(result); // 檢查返回值結構
+
+      const today = new Date();
+
+      const formattedDate = today.toISOString().split('T')[0];
+      const formattedPickupTime = `${formattedDate} ${pickupTime}:00`;
+      console.log("formattedPickupTime", formattedPickupTime)
+      // formattedPickupTime yyyy-mm-dd hh:mm:ss
+
+      const connection = await mysql.createConnection(connectionConfig);
 
       const sql = "INSERT INTO `orders` (`customerName`, `contact`, `pickupTime`) VALUES (?, ?, ?)";
-      const values = [customerName, contact, pickupTime];
+      const values = [customerName, contact, formattedPickupTime];
       const [result, fields] = await connection.execute(sql, values);
 
       console.log("result", result);
       console.log("fields", fields);
 
-      const orderId = orderResult.insertId;
-
-      // 插入每個訂單項目到資料庫
-    //   for (const item of orderItems) {
-    //     const { itemName, quantity, price } = item;
-    //     await db.execute(
-    //       "INSERT INTO order_items (orderId, itemName, quantity, price) VALUES (?, ?, ?, ?)",
-    //       [orderId, itemName, quantity, price]
-    //     );
-    //   }
+      const orderId = result.insertId;
 
       // 回應成功訊息
       res.status(201).json({
