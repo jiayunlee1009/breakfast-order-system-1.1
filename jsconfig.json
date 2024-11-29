@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",    // 指定模組系統為 CommonJS
+      "target": "ES6",         // 目標語言版本 (可以選擇 ES5, ES6 等)
+      "moduleResolution": "node", // 設定模組解析策略
+      "strict": true,          // 開啟所有類型檢查的選項
+      "esModuleInterop": true, // 允許默認匯入非 ES 模組
+      "skipLibCheck": true,    // 跳過庫的類型檢查
+      "forceConsistentCasingInFileNames": true // 確保檔案名稱一致性
+    },
+    "include": [
+      "./**/*.js" // 包含專案內所有的 JavaScript 檔案
+    ],
+    "exclude": [
+      "node_modules" // 排除 node_modules 資料夾
+    ]
+  }
+  

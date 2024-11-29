@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebMe Breakfast</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+    <!-- 側拉選單 -->
+    <nav id="sidebar">
+    <button id="close-menu">&times;</button>
+    <ul>
+        <li><a href="#" id="home-link">回到首頁</a></li>
+        <li class="submenu">
+        餐點分類
+        <ul>
+            <li><a href="#" data-category="toast">吐司</a></li>
+            <li><a href="#" data-category="egg-pie">蛋餅</a></li>
+            <li><a href="#" data-category="burger">漢堡</a></li>
+            <li><a href="#" data-category="noodle">鐵板麵</a></li>
+            <li><a href="#" data-category="drink">飲料</a></li>
+            <li><a href="#" data-category="random">隨機搭配</a></li>
+        </ul>
+        </li>
+        <li><a href="#" id="cart-link">購物車<span id="cart-count">(0)</span></a></li>
+    </ul>
+    </nav>
+
+    <!-- 主內容 -->
+    <header>
+    <button id="open-menu">☰</button>
+    <h1>歡迎來到 WebMe Breakfast</h1>
+    </header>
+
+    <main id="content">
+      <p>請從側邊選單選擇分類開始點餐！</p>
+    </main>
+    
+    
+    <!-- 提示訊息 -->
+    <div id="hint" class="hint">已加入購物車</div>
+</div>
+
+<!-- 購物車彈窗 -->
+<div id="cart-modal" class="modal">
+  <div class="modal-content">
+    <span id="close-cart" class="close">&times;</span>
+    <h2>購物車</h2>
+    <ul id="cart-modal-items"></ul>
+    <div id="cart-modal-total">
+      <strong>總計：</strong> $<span id="modal-total-price">0</span>
+    </div>
+
+    
+    <!-- 訂購人資訊表單 -->
+    <form id="order-info-form">
+      <div>
+        <h3>訂購人資訊</h3>
+        <label for="order-name">姓名：</label>
+        <input type="text" id="order-name" name="order-name" required placeholder="姓名">
+      </div>
+      <div>
+        <label for="order-phone">連絡電話：</label>
+        <input type="tel" id="order-phone" name="order-phone" required pattern="[0-9]{10}" placeholder="+886">
+      </div>
+      <div>
+        <label for="order-time">預計取餐時間：</label>
+        <input type="time" id="order-time" name="order-time" required>
+      </div>
+    <button id="cart-submit">送出訂單</button>
+  </div>
+</div>
+
+<main id="content">
+  <!-- 這裡將由 JavaScript 動態填充 -->
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
