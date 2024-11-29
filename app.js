@@ -29,6 +29,18 @@ const connectionConfig = {
 // 設定靜態檔案的根目錄
 app.use(express.static(path.join(__dirname, "public")));
 
+let verify = async (req, res, next) => {
+  // [
+  //   // 使用 express-validator 進行請求資料的驗證
+  //   body("customerName").notEmpty().withMessage("姓名是必填的"),
+  //   body("contact").isMobilePhone().withMessage("請輸入有效的手機號碼"),
+  //   body("pickupTime").notEmpty().withMessage("取餐時間是必填的"),
+  //   body("orderItems").isArray({ min: 1 }).withMessage("訂單項目至少需要一個"),
+  // ],
+  next();
+}
+
+// 把以下的東西塞到上面去，做成另外一個 middleware
 
 app.post("/test",
   // [
