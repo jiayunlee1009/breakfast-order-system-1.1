@@ -209,9 +209,11 @@ function showCategory(category) {
   const content = document.getElementById('content');
   let categoryHTML = `<h2>${category} 料理</h2><ul>`;
 
+  // console.log("menu.category", menu.category) // undefined
   const menuItems = menu[category];
+  // console.log("menuItems", menuItems) // 有 menu
 
-  menuItems.forEach(item => {
+  menuItems.forEach( item => {
     categoryHTML += `
       <li>
         <span>${item.name} - $${item.price}</span>
@@ -262,6 +264,9 @@ function showRandomCombo() {
   
   const randomDrink = menu['drink'][Math.floor(Math.random() * menu['drink'].length)];
 
+  console.log("randomFood", randomFood)
+  console.log("randomDrink", randomDrink)
+
   // 更新隨機搭配區域內容
   const randomComboContainer = document.getElementById('content');
   randomComboContainer.innerHTML = `
@@ -273,7 +278,19 @@ function showRandomCombo() {
   `;
 
   // 記錄目前的隨機搭配
-  currentRandomCombo = { food: randomFood, drink: randomDrink };
+  currentRandomCombo = { 
+    food: {
+      name: randomFood.name,
+      price: randomFood.price
+    }, 
+    drink: {
+      name: randomDrink.name,
+      price: randomDrink.price
+    }
+  };
+  console.log("currentRandomCombo", currentRandomCombo)
+  console.log("currentRandomCombo.food.name", currentRandomCombo.food.name)
+
 
   // 自動關閉側拉選單
   document.getElementById('sidebar').style.left = '-250px';
@@ -281,8 +298,9 @@ function showRandomCombo() {
   // 綁定事件
   bindRandomComboEvents();
 }
-  // 綁定隨機搭配按鈕事件
-  function bindRandomComboEvents() {
+
+// 綁定隨機搭配按鈕事件
+function bindRandomComboEvents() {
 
   // 點擊再隨機搭配一次
   document.getElementById('random-again').addEventListener('click', showRandomCombo);
@@ -290,8 +308,15 @@ function showRandomCombo() {
   // 點擊加入隨機搭配至購物車
   document.getElementById('add-to-cart').addEventListener('click', () => {
     if (currentRandomCombo) {
-      cart.push(currentRandomCombo.food);
-      cart.push(currentRandomCombo.drink);
+      
+      addToCart(currentRandomCombo.food.name, currentRandomCombo.food.price)
+      addToCart(currentRandomCombo.drink.name, currentRandomCombo.drink.price)
+      // cart.push(currentRandomCombo.food.name);
+      // cart = [辣味雞肉蛋餅,] 
+      // cart.push(currentRandomCombo.drink.name);
+      // cart = [辣味雞肉蛋餅, 鮮奶茶] 
+    
+      console.log("currentRandomCombo", currentRandomCombo);
       cartCount += 2; // 更新購物車數量
       updateCartModal();  // 更新購物車數量
       updateCartCount();
@@ -324,13 +349,23 @@ document.getElementById("cart-submit").addEventListener("click", async (e) => {
   });
   
 
-  // 構建訂單資料
+  // 我們把訂單資料定義為一個物件，類似於 JSON 的形式，注意這不是真的 JSON
   const orderData = {
     customerName: customerName,
     contact: contact,
     pickupTime: pickupTime,
     orderItems: orderItems
   };
+
+  /** 這是真正的 JSON 檔案，注意 JSON 檔案不會有分號，也不能加註解
+   * JSON = JavaScript Object Notation = JavaScript 物件標記
+  const orderData = {
+      "customerName": "customerName",
+      "contact": "contact",
+      "pickupTime": "pickupTime",
+      "orderItems": "orderItems"
+  }
+   */
 
   try {
     // 發送 POST 請求到後端
@@ -339,6 +374,10 @@ document.getElementById("cart-submit").addEventListener("click", async (e) => {
       headers: {
         "Content-Type": "application/json"
       },
+      /* 透過 JavaScript 內建的 method 
+       * 把 orderData 轉換為真正的 JSON 格式，送到 req.body 裡面
+       * 這就是你在 Developer tool 裡面會看到的 Payload
+      */
       body: JSON.stringify(orderData)
     });
 
