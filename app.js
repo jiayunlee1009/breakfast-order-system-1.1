@@ -41,30 +41,57 @@ app.post("/test",
   async (req, res) => {
     // 驗證請求資料
 
-    const { customerName, contact, pickupTime } = req.body;
+    const { customerName, contact, pickupTime, itemName } = req.body;
 
     console.log("============")
-    console.log("req.body", req.body)
+    console.log("req.body is:\n", req.body)
+    console.log("------------")
+    console.log("req.body.customerName is:\n", req.body.customerName)
+    console.log("------------")
+    console.log("req.body.orderItems are:\n", req.body.orderItems)  
+    console.log("------------")
+    console.log("req.body.orderItems[1].itemName is:\n", req.body.orderItems[1].itemName)  
+    console.log("============")
+    
 
     try {
 
+      // 由於 SQL 資料庫定義 Datetime 資料，格式為 yyyy-mm-dd hh:mm:ss，因此我們將格式進行處理使得符合資料表定義的格式
       const today = new Date();
-
       const formattedDate = today.toISOString().split('T')[0];
       const formattedPickupTime = `${formattedDate} ${pickupTime}:00`;
-      console.log("formattedPickupTime", formattedPickupTime)
-      // formattedPickupTime yyyy-mm-dd hh:mm:ss
 
+      console.log("pickupTime", pickupTime)
+      console.log("formattedDate", formattedDate)
+      console.log("formattedPickupTime", formattedPickupTime) // formattedPickupTime yyyy-mm-dd hh:mm:ss
+      
+      // 做 MySQL 資料庫連線的 Method，await 的意思是此列程式完成執行後，才做接下來的動作（指令）
       const connection = await mysql.createConnection(connectionConfig);
 
-      const sql = "INSERT INTO `orders` (`customerName`, `contact`, `pickupTime`) VALUES (?, ?, ?)";
-      const values = [customerName, contact, formattedPickupTime];
-      const [result, fields] = await connection.execute(sql, values);
+      const orderSQL = "INSERT INTO `orders` (`customerName`, `contact`, `pickupTime`) VALUES (?, ?, ?)";
+      // 寫 ? 的意思是防止一階注入式攻擊（1st-order SQL injection），將準備 insert 到資料庫的查詢字串定義為「真正的字串」
+      const orderValues = [customerName, contact, formattedPickupTime];
+      const [orderResult, orderFields] = await connection.execute(orderSQL, orderValues);
 
-      console.log("result", result);
-      console.log("fields", fields);
+      console.log("orderResult", orderResult);
+      console.log("orderFields", orderFields);
+      console.log("------------")
 
-      const orderId = result.insertId;
+      const orderId = orderResult.insertId;
+
+      const orderItemsSQL = "INSERT INTO `order_items` (`orderId`, `itemName`, `quantity`, `price`) VALUES (?, ?, ?, ?)";
+      
+      // 我們要把每一項 item 分別存到資料表，所以要寫 for 迴圈幫他印出每一項資料（iterate 遍歷物件中的資料），然後進行 insert
+      for (i=0; i<req.body.orderItems.length; i++) {
+        const orderItemsValues = [orderId, req.body.orderItems[i].itemName, req.body.orderItems[i].quantity, req.body.orderItems[i].price] ;  
+        console.log("req.body.orderItems", req.body.orderItems[i]);
+        const [orderItemsResult, orderItemsFields] = await connection.execute(orderItemsSQL, orderItemsValues);
+        console.log("orderItemsResult", orderItemsResult);
+        console.log("orderItemsFields", orderItemsFields);
+        }
+
+
+      console.log("============")
 
       // 回應成功訊息
       res.status(201).json({
@@ -74,7 +101,7 @@ app.post("/test",
       });
     } catch (error) {
       console.error("插入資料庫失敗：", error);
-      res.status(500).json({ status: "error", message: "伺服器錯誤，請稍後再試" });
+      res.status(500).json({ status: "error", message: error });
       
     }
   }
