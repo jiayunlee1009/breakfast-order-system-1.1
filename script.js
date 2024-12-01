@@ -69,7 +69,7 @@ const menu = {
   ]
 }
 
-/* 處理購物車邏輯：假定購物車中有奶茶，要加入奶茶跟紅茶 
+/* 處理購物車邏輯：假定購物車中有奶茶，要加入奶茶跟紅茶
   如果你加入奶茶 -> 走 if 的案例，購物車有相同東西就加數量
   如果你加入紅茶 -> 走 else 的案例，如果沒有就加一個
 */
@@ -88,14 +88,10 @@ function addToCart(itemName, itemPrice) {
   cartCount++;
   updateCartCount();
 }
-
-// 更新購物車數量顯示
 function updateCartCount() {
   const cartCountElement = document.getElementById('cart-count');
   cartCountElement.textContent = `(${cartCount})`;
 }
-
-// 更新購物車彈窗
 function updateCartModal() {
   const cartModalItems = document.getElementById('cart-modal-items');
   const modalTotalPriceElem = document.getElementById('modal-total-price');
@@ -116,7 +112,7 @@ function updateCartModal() {
     const item = cart[itemName];
     const listItem = document.createElement('li');
     listItem.innerHTML = `
-      ${itemName} - $${item.price} x ${item.quantity} = $${item.price * item.quantity}
+      ${itemName} ： $${item.price} x ${item.quantity} = $${item.price * item.quantity}
       <button class="remove-item" data-item-name="${itemName}">刪除</button>
     `;
     cartModalItems.appendChild(listItem);
@@ -137,77 +133,39 @@ function updateCartModal() {
     });
   });
 }
+function removeItemFromCart(itemName) {
+  if (cart[itemName]) {
+    cartCount -= cart[itemName].quantity;
+    delete cart[itemName];
+  }
+}
 
-// 顯示購物車彈窗
-document.getElementById('cart-link').addEventListener('click', () => {
-  updateCartModal();
-  document.getElementById('cart-modal').style.display = 'block';
-  document.getElementById('sidebar').style.left = '-250px';
-});
-
-// 關閉購物車彈窗
-document.getElementById('close-cart').addEventListener('click', () => {
-  document.getElementById('cart-modal').style.display = 'none';
-});
-
-// 顯示提示訊息
 function showHint(message) {
   const hint = document.getElementById('hint');
   hint.textContent = message;
   hint.style.opacity = '1';
 
-   // 清除先前的隱藏計時器，避免重疊顯示問題
-   clearTimeout(hint.timeoutId);
+  // 清除先前的隱藏計時器，避免重疊顯示問題
+  clearTimeout(hint.timeoutId);
 
-   // 設定隱藏提示的計時器
-   hint.timeoutId = setTimeout(() => {
-     hint.style.opacity = '0';
-   }, 2000);
+  // 設定隱藏提示的計時器
+  hint.timeoutId = setTimeout(() => {
+    hint.style.opacity = '0';
+  }, 2000);
 }
 
-// 點擊開啟側邊菜單
-document.getElementById('open-menu').addEventListener('click', () => {
-  document.getElementById('sidebar').style.left = '0';
-});
-
-// 點擊關閉側邊菜單
-document.getElementById('close-menu').addEventListener('click', () => {
-  document.getElementById('sidebar').style.left = '-250px';
-});
-
-// 刪除餐點功能
-/*  從購物車裡面把餐點刪掉 
-    如果購物車中存在「奶茶」，就扣奶茶陣列的數量
-    然後從購物車中把奶茶刪掉
-    其他商品亦同
-*/
-function removeItemFromCart(itemName) {
-  if (cart[itemName]) {
-    cartCount -= cart[itemName].quantity; 
-    delete cart[itemName];
-  }
-}
-
-// 點擊餐點分類選單
-const categoryLinks = document.querySelectorAll('[data-category]');
-categoryLinks.forEach(link => {
-  link.addEventListener('click', (e) => {
-    const category = e.target.getAttribute('data-category');
-    showCategory(category);
-    // 在選擇分類後自動關閉側邊菜單
-    document.getElementById('sidebar').style.left = '-250px';
-  });
-});
-
-// 顯示餐點類別
 function showCategory(category) {
   const content = document.getElementById('content');
-  let categoryHTML = `<h2>${category} 料理</h2><ul>`;
+  const categoryUpperCase = category.toUpperCase();
+  let categoryHTML = `<h2>${categoryUpperCase} 料理</h2><ul>`;
+
+  // console.log("menu.category", menu.category) // undefined
   const menuItems = menu[category];
+  // console.log("menuItems", menuItems) // 有 menu
 
   menuItems.forEach( item => {
     categoryHTML += `
-      <li>
+      <li class="food-item">
         <span>${item.name} - $${item.price}</span>
         <button class="add-to-cart">加入購物車</button>
       </li>
@@ -222,26 +180,36 @@ function showCategory(category) {
     button.addEventListener('click', (e) => {
       const itemName = e.target.parentElement.querySelector('span').textContent.split(' - ')[0];
       const itemPrice = parseInt(e.target.parentElement.querySelector('span').textContent.split('$')[1]);
-      
+
       // 新增到購物車
       addToCart(itemName, itemPrice);
-      
+      // cart.push({ name: itemName, price: itemPrice });
+      // // cartCount++;
+
+      // /* 1. 這部份需要調整到可以做基礎統計，例如
+      //       火腿蛋土司 $50 * 7個 共 350 元
+      //       培根蛋吐司 $50 * 5個 共 250 元
+
+      //       這樣你前面就要先透過陣列來紀錄數量。
+      // */
+
+      // console.log("cart", ...cart)
+
       // 更新彈窗購物車
       updateCartModal();
+      // updateCartCount();
 
       // 顯示提示訊息
       showHint('已加入購物車');
     });
   });
 }
-
-// 顯示隨機搭配餐點
 function showRandomCombo() {
   // 隨機選擇食物和飲料
   const randomFoodCategory = ['toast', 'egg-pie', 'burger', 'noodle'];
   const randomFoodCategoryIndex = Math.floor(Math.random() * randomFoodCategory.length);
   const randomFood = menu[randomFoodCategory[randomFoodCategoryIndex]][Math.floor(Math.random() * menu[randomFoodCategory[randomFoodCategoryIndex]].length)];
-  
+
   const randomDrink = menu['drink'][Math.floor(Math.random() * menu['drink'].length)];
 
   console.log("randomFood", randomFood)
@@ -250,19 +218,25 @@ function showRandomCombo() {
   // 更新隨機搭配區域內容
   const randomComboContainer = document.getElementById('content');
   randomComboContainer.innerHTML = `
-    <h2>隨機搭配</h2>
-    <p>食物: ${randomFood.name} - $${randomFood.price}</p>
-    <p>飲料: ${randomDrink.name} - $${randomDrink.price}</p>
-    <button id="random-again">再隨機搭配一次</button>
-    <button id="add-to-cart">加入隨機搭配至購物車</button>
-  `;
+  <div id="random-combo-container" class="modal-content centered-container">
+    <h2 class="random-combo-title">隨機搭配</h2>
+    <div class="random-combo-details">
+        <p class="random-combo-item">食物 ： ${randomFood.name} 單價為 $${randomFood.price}</p>
+        <p class="random-combo-item">飲料 ： ${randomDrink.name} 單價為 $${randomDrink.price}</p>
+        <div class="random-combo-actions">
+            <button id="random-again" class="action-button">再隨機搭配一次</button>
+            <button id="add-to-cart" class="action-button">加入隨機搭配至購物車</button>
+        </div>
+    </div>
+  </div>
+`;
 
   // 記錄目前的隨機搭配
-  currentRandomCombo = { 
+  currentRandomCombo = {
     food: {
       name: randomFood.name,
       price: randomFood.price
-    }, 
+    },
     drink: {
       name: randomDrink.name,
       price: randomDrink.price
@@ -274,12 +248,10 @@ function showRandomCombo() {
 
   // 自動關閉側拉選單
   document.getElementById('sidebar').style.left = '-250px';
-  
+
   // 綁定事件
   bindRandomComboEvents();
 }
-
-// 綁定隨機搭配按鈕事件
 function bindRandomComboEvents() {
 
   // 點擊再隨機搭配一次
@@ -288,16 +260,16 @@ function bindRandomComboEvents() {
   // 點擊加入隨機搭配至購物車
   document.getElementById('add-to-cart').addEventListener('click', () => {
     if (currentRandomCombo) {
-      
+
       addToCart(currentRandomCombo.food.name, currentRandomCombo.food.price)
       addToCart(currentRandomCombo.drink.name, currentRandomCombo.drink.price)
       // cart.push(currentRandomCombo.food.name);
-      // cart = [辣味雞肉蛋餅,] 
+      // cart = [辣味雞肉蛋餅,]
       // cart.push(currentRandomCombo.drink.name);
-      // cart = [辣味雞肉蛋餅, 鮮奶茶] 
-    
+      // cart = [辣味雞肉蛋餅, 鮮奶茶]
+
       console.log("currentRandomCombo", currentRandomCombo);
-      // cartCount += 2; // 更新購物車數量
+      cartCount += 2; // 更新購物車數量
       updateCartModal();  // 更新購物車數量
       updateCartCount();
       showHint('已加入購物車');
@@ -305,12 +277,58 @@ function bindRandomComboEvents() {
   });
 }
 
+function closeCartModal() {
+  document.getElementById('cart-modal').classList.remove('open');
+  document.querySelector('.modal-background').classList.remove('open'); // 隱藏背景遮罩
+}
+
+document.getElementById('cart-link').addEventListener('click', () => {
+  updateCartModal();
+  document.getElementById('cart-modal').classList.add('open');
+  document.querySelector('.modal-background').classList.add('open');
+  document.getElementById('sidebar').style.left = '-250px';
+});
+document.getElementById('close-cart').addEventListener('click', closeCartModal);
+document.querySelector('.modal-background').addEventListener('click', closeCartModal);
+// close the order-form if `Esc` is pressed
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    document.getElementById('cart-modal').style.display = 'none';
+  }
+});
+
+
+document.getElementById('open-menu').addEventListener('click', () => {
+  document.getElementById('sidebar').style.left = '0';
+});
+document.getElementById('close-menu').addEventListener('click', () => {
+  document.getElementById('sidebar').style.left = '-250px';
+});
+
+// 刪除餐點功能
+/*  從購物車裡面把餐點刪掉
+    如果購物車中存在「奶茶」，就扣奶茶陣列的數量
+    然後從購物車中把奶茶刪掉
+    其他商品亦同
+*/
+// 點擊餐點分類選單
+const categoryLinks = document.querySelectorAll('[data-category]');
+categoryLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    const category = e.target.getAttribute('data-category');
+    showCategory(category);
+    // 在選擇分類後自動關閉側邊菜單
+    document.getElementById('sidebar').style.left = '-250px';
+  });
+});
+
+// 顯示餐點類別
+
 // 點擊"隨機搭配"選單項目
 document.querySelector('[data-category="random"]').addEventListener('click', () => {
   showRandomCombo();
 });
 
-// 點擊“送出購物車”按鈕
 document.getElementById("cart-submit").addEventListener("click", async (e) => {
   e.preventDefault();
 
@@ -319,7 +337,7 @@ document.getElementById("cart-submit").addEventListener("click", async (e) => {
   const contact = document.getElementById("order-phone").value;
   const pickupTime = document.getElementById("order-time").value;
 
-  // 從購物車陣列中抓資料，用 cart 物件來處理
+  /* 2. 這部份要改成可以直接從購物車陣列中抓資料，用 cart 物件來處理 */
   const orderItems = Object.keys(cart).map(itemName => {
     return {
       itemName: itemName,
@@ -327,15 +345,25 @@ document.getElementById("cart-submit").addEventListener("click", async (e) => {
       price: cart[itemName].price,
     };
   });
-  
 
-  // 把訂單資料定義為一個物件，類似於 JSON 的形式
+
+  // 我們把訂單資料定義為一個物件，類似於 JSON 的形式，注意這不是真的 JSON
   const orderData = {
     customerName: customerName,
     contact: contact,
     pickupTime: pickupTime,
     orderItems: orderItems
   };
+
+  /** 這是真正的 JSON 檔案，注意 JSON 檔案不會有分號，也不能加註解
+   * JSON = JavaScript Object Notation = JavaScript 物件標記
+  const orderData = {
+      "customerName": "customerName",
+      "contact": "contact",
+      "pickupTime": "pickupTime",
+      "orderItems": "orderItems"
+  }
+   */
 
   try {
     // 發送 POST 請求到後端
@@ -344,7 +372,7 @@ document.getElementById("cart-submit").addEventListener("click", async (e) => {
       headers: {
         "Content-Type": "application/json"
       },
-      /* 透過 JavaScript 內建的 method 
+      /* 透過 JavaScript 內建的 method
        * 把 orderData 轉換為真正的 JSON 格式，送到 req.body 裡面
        * 這就是你在 Developer tool 裡面會看到的 Payload
       */
@@ -363,5 +391,3 @@ document.getElementById("cart-submit").addEventListener("click", async (e) => {
     console.error(err);
   }
 });
-
-
