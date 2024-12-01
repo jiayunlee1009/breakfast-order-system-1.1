@@ -269,7 +269,7 @@ function bindRandomComboEvents() {
       // cart = [辣味雞肉蛋餅, 鮮奶茶]
 
       console.log("currentRandomCombo", currentRandomCombo);
-      cartCount += 2; // 更新購物車數量
+      // cartCount += 2; // 更新購物車數量
       updateCartModal();  // 更新購物車數量
       updateCartCount();
       showHint('已加入購物車');
