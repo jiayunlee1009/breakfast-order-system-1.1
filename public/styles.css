@@ -11,7 +11,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #2196F3;
+  background-color: #f2c855;
   color: #FFFFFF;
   padding: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -72,7 +72,7 @@ ul {
 }
 
 #sidebar a:hover {
-  color: #2196F3;
+  color: #f2c855;
 }
 
 #close-menu {
@@ -107,7 +107,7 @@ main {
 }
 
 .food-item button {
-  background-color: #64B5F6;
+  background-color: #f2c855;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -117,7 +117,7 @@ main {
 }
 
 .food-item button:hover {
-  background-color: #42A5F5;
+  background-color: #edcf74;
   transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -148,7 +148,7 @@ main {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #64B5F6;
+  background: #edcf74;
   color: #FFFFFF;
   padding: 10px 20px;
   border-radius: 4px;
@@ -270,7 +270,7 @@ main {
   padding: 10px;
   font-size: 1rem;
   border: none;
-  background: #64B5F6;
+  background: #edcf74;
   color: white;
   border-radius: 4px;
   cursor: pointer;
@@ -278,7 +278,7 @@ main {
 }
 
 .modal-content button#cart-submit:hover {
-  background: #42A5F5;
+  background: #f2c855;
 }
 
 .modal-content .close {
@@ -305,7 +305,7 @@ main {
 #random-combo-container h2 {
   font-size: 1.5em;
   margin-bottom: 10px;
-  color: #2196F3;
+  color: #f2c855;
 }
 
 #random-combo-container p {
@@ -320,7 +320,7 @@ main {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background: #64B5F6;
+  background: #edcf74;
   color: white;
   font-size: 1rem;
   display: flex;
@@ -329,7 +329,7 @@ main {
 }
 
 #random-combo-container button:hover {
-  background: #42A5F5;
+  background: #f2c855;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
@@ -342,7 +342,7 @@ main {
 
 /* 按鈕樣式 */
 button {
-  background-color: #64B5F6;
+  background-color: #edcf74;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -352,7 +352,7 @@ button {
 }
 
 button:hover {
-  background-color: #42A5F5;
+  background-color: #f2c855;
   color: white;
 }
 
@@ -409,9 +409,9 @@ form input {
 }
 
 form input:focus {
-  border-color: #2196F3;
+  border-color: #edcf74;
   outline: none;
-  box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+  box-shadow: 0 0 5px rgba(206, 99, 6, 0.921);
 }
 
 .form-group {
@@ -438,16 +438,16 @@ form input:focus {
 }
 
 .form-group input:focus {
-  border-color: #2196f3;
+  border-color: #edcf74;
   outline: none;
-  box-shadow: 0 0 4px rgba(33, 150, 243, 0.5);
+  box-shadow: 0 0 4px rgba(206, 99, 6, 0.921);
 }
 .submit-button {
   padding: 0.75rem;
   font-size: 1rem;
   border: none;
   border-radius: 5px;
-  background-color: #64b5f6;
+  background-color: #edcf74;
   color: white;
   font-weight: bold;
   cursor: pointer;
@@ -455,7 +455,7 @@ form input:focus {
 }
 
 .submit-button:hover {
-  background-color: #42A5F5;
+  background-color: #f2c855;
 }
 
 label {
