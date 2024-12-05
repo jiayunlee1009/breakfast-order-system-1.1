@@ -70,6 +70,7 @@ DB_PORT=3306
 
    CREATE TABLE orders (
      id INT AUTO_INCREMENT PRIMARY KEY,
+     orderId INT,
      customerName VARCHAR(255) NOT NULL,
      contact VARCHAR(100) NOT NULL,
      pickupTime DATETIME NOT NULL,
