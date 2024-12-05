@@ -94,31 +94,48 @@ app.post("/test", async (req, res) => {
 });
 
 app.post("/query", async (req, res) => {
-  const contact = req.body.contact;
+  const { contact, startDateTime, endDateTime } = req.body;
   console.log("contact", contact);
+  console.log("startDateTime", startDateTime);
+  console.log("endDateTime", endDateTime);
 
-  // if (!phoneNumber) {
-  //   return res.status(400).json({
-  //     status: "failed",
-  //     message: "請輸入手機號碼",
-  //   });
-  // }
+  if (!contact) {
+    return res.status(400).json({
+      status: "failed",
+      message: "請輸入手機號碼",
+    });
+  }
 
   try {
-    // 查詢訂單的 SQL 語句
-    const orderSQL = "SELECT * FROM `orders` WHERE `contact` = ?";
     const connection = await mysql.createConnection(connectionConfig);
 
-    const [orderResult] = await connection.execute(orderSQL, [contact]);
+    let orderSQL = "SELECT * FROM `orders` WHERE 1=1";
+    const params = [];
+
+    if (contact) {
+      orderSQL += " AND `contact` = ?";
+      params.push(contact);
+    }
+
+    if (startDateTime) {
+      orderSQL += " AND `pickupTime` >= ?";
+      params.push(startDateTime);
+    }
+
+    if (endDateTime) {
+      orderSQL += " AND `pickupTime` <= ?";
+      params.push(endDateTime);
+    }
+
+    const [orderResult] = await connection.execute(orderSQL, params);
 
     if (orderResult.length === 0) {
       return res.status(404).json({
         status: "failed",
-        message: "未找到與該電話號碼相關的訂單。",
+        message: "未找到符合條件的訂單。",
       });
     }
 
-    // 查詢對應的訂單項目
     const orderIds = orderResult.map((order) => order.id);
     const placeholders = orderIds.map(() => "?").join(", ");
     const orderItemsSQL = `SELECT * FROM \`order_items\` WHERE \`orderId\` IN (${placeholders})`;
@@ -127,7 +144,6 @@ app.post("/query", async (req, res) => {
       orderIds,
     );
 
-    // 整理回傳結果，合併訂單與訂單項目
     const orders = orderResult.map((order) => {
       const items = orderItemsResult.filter(
         (item) => item.orderId === order.id,

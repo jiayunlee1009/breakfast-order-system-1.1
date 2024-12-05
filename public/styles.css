@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 /* Body 基本樣式 */
 body {
   margin: 0;
@@ -405,7 +409,7 @@ form input {
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
-  outline: bl;
+  outline: black solid 1px;
 }
 
 form input:focus {
@@ -418,7 +422,6 @@ form input:focus {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 100%;
 }
 
 .form-group label {
@@ -442,6 +445,7 @@ form input:focus {
   outline: none;
   box-shadow: 0 0 4px rgba(206, 99, 6, 0.921);
 }
+
 .submit-button {
   padding: 0.75rem;
   font-size: 1rem;
@@ -463,4 +467,45 @@ label {
   margin-bottom: 5px;
   font-weight: bold;
   position: relative;
+}
+
+/* Order Container */
+.orders-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.order-block {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+}
+
+.order-block h3 {
+  margin-top: 0;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.order-table th,
+.order-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.order-table th {
+  background-color: #f2f2f2;
+}
+
+.order-total {
+  text-align: right;
+  font-weight: bold;
+  margin-top: 10px;
 }

@@ -415,11 +415,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const QueryContainer = document.getElementById("content");
       QueryContainer.innerHTML = `
         <div id="random-combo-container" class="modal-content centered-container">
-          <h2 class="form-title">輸入電話號碼</h2>
-          <form id="phone-form">
+          <h2 class="form-title">查詢訂單</h2>
+          <form id="query-form"> 
             <div class="form-group">
-              <label for="phone-input">電話號碼：</label>
+              <label for="phone-input">電話號碼（可選）：</label>
               <input type="text" id="phone-input" class="form-input" placeholder="請輸入電話號碼">
+            </div>
+            <div class="form-group">
+              <label for="start-date-input">日期從：</label>
+              <input type="date" id="start-date-input" class="form-input">
+              <label for="start-time-input">時間從：</label>
+              <input type="time" id="start-time-input" class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="end-date-input">日期到：</label>
+              <input type="date" id="end-date-input" class="form-input">
+              <label for="end-time-input">時間到：</label>
+              <input type="time" id="end-time-input" class="form-input">
             </div>
             <div class="form-actions">
               <button type="button" id="clear-button" class="action-button">清空</button>
@@ -432,31 +444,45 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("clear-button").addEventListener("click", (e) => {
         e.preventDefault();
         document.getElementById("phone-input").value = "";
+        document.getElementById("start-date-input").value = "";
+        document.getElementById("end-date-input").value = "";
       });
 
       document
-        .getElementById("phone-form")
+        .getElementById("query-form")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
           const contact = document.getElementById("phone-input").value.trim();
-          console.log(contact);
 
-          // if (!contact || contact === null) {
-          //   alert("請輸入有效的電話號碼！");
-          // }
+          const startDate = document.getElementById("start-date-input").value;
+          const startTime = document.getElementById("start-time-input").value;
+          const endDate = document.getElementById("end-date-input").value;
+          const endTime = document.getElementById("end-time-input").value;
+
+          const startDateTime =
+            startDate && startTime ? `${startDate}T${startTime}` : null;
+          const endDateTime =
+            endDate && endTime ? `${endDate}T${endTime}` : null;
+
+          // 如果所有查詢條件都未填寫，提示用戶
+          if (!contact && !startDateTime && !endDateTime) {
+            alert("請至少輸入一個查詢條件！");
+            return;
+          }
+
           try {
             const response = await fetch("/query", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ contact }),
+              body: JSON.stringify({ contact, startDateTime, endDateTime }),
             });
 
             const result = await response.json();
 
             if (response.ok) {
-              // alert(`查詢成功：${JSON.stringify(result.data)}`);
+              // 顯示查詢結果
               displayOrders(result.data);
             } else {
               alert(`錯誤：${result.message}`);
@@ -482,7 +508,7 @@ function displayOrders(orders) {
       <h2 class="form-title">查詢結果</h2>
   `;
 
-  orders.forEach((order, index) => {
+  orders.forEach((order) => {
     tableHTML += `
       <div class="order-block">
         <h3>訂單編號：${order.orderId}</h3>
@@ -516,7 +542,7 @@ function displayOrders(orders) {
       `;
     });
 
-    tableHTML += `
+    tableHTML += ` 
           </tbody>
         </table>
         <p class="order-total">訂單總計：$${orderTotal}</p>
