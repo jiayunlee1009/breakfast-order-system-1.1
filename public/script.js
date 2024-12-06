@@ -187,7 +187,7 @@ function showCategory(category) {
   document.querySelectorAll(".add-to-cart").forEach((button) => {
     button.addEventListener("click", (e) => {
       const itemName = e.target.parentElement
-        .querySelector("span")
+        .querySelector("h3")
         .textContent.split(" - ")[0];
       const itemPrice = parseInt(
         e.target.parentElement
