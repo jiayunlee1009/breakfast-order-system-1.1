@@ -1,81 +1,117 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebMe Breakfast</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-  <div id="app">
-    <!-- 側邊菜單 -->
-    <nav id="sidebar">
-      <button id="close-menu">&times;</button>
-      <ul>
-        <li><a href="/" id="home-link">回到首頁</a></li>
-        <li class="submenu">
-          餐點分類
-          <ul>
-            <li><a href="#" data-category="toast">吐司</a></li>
-            <li><a href="#" data-category="egg-pie">蛋餅</a></li>
-            <li><a href="#" data-category="burger">漢堡</a></li>
-            <li><a href="#" data-category="noodle">鐵板麵</a></li>
-            <li><a href="#" data-category="drink">飲料</a></li>
-            <li><a href="#" data-category="random">隨機搭配</a></li>
-          </ul>
-        </li>
-        <li><a href="#" id="cart-link">購物車<span id="cart-count">(0)</span></a></li>
-      </ul>
-    </nav>
+<div id="app">
 
-    <!-- 主內容 -->
-    <header>
+  <header>
+    <nav>
       <button id="open-menu">☰</button>
       <h1>歡迎來到 WebMe Breakfast</h1>
-    </header>
+    </nav>
+  </header>
 
-    <main id="content">
-      <p>請從側邊選單選擇分類開始點餐！</p>
-    </main>
+  <nav id="sidebar">
+    <button id="close-menu">&times;</button>
+    <ul class="menu">
+      <li><a href="/" id="home-link">回到首頁</a></li>
+      <li><a href="#" id="query">查詢餐點</a></li>
+    </ul>
+    <section class="menu-category">
+      <h2>餐點分類</h2>
+      <ul>
+          <li><a href="#" data-category="toast">吐司</a></li>
+          <li><a href="#" data-category="egg-pie">蛋餅</a></li>
+          <li><a href="#" data-category="burger">漢堡</a></li>
+          <li><a href="#" data-category="noodle">鐵板麵</a></li>
+          <li><a href="#" data-category="drink">飲料</a></li>
+          <li><a href="#" data-category="random">隨機搭配</a></li>
+        </ul>
+    </section>
+    <ul>
+      <li><a href="#" id="cart-link">購物車 <span id="cart-count">(0)</span></a></li>
+    </ul>
+  </nav>
 
-    <!-- 提示訊息 -->
-    <div id="hint" class="hint">已加入購物車</div>
+  <main id="content">
+    <article class="main-contents">
+      <section class="intro-section">
+        <h1 class="header">請從側邊選單選擇分類開始點餐！</h1>
+        <pre> ---------------------------------------------------------------------------- </pre>
+        <div class="breakfast-info">
+          <h2 class="importance-header">為什麼吃早餐很重要？</h2>
+          <p class="importance-paragraph">早餐是一天中最重要的一餐，因為它為你的身體和大腦提供了能量，幫助你開始一天的活動。當你一早醒來，身體經過了一整夜的空腹，急需補充能量和營養來啟動新的一天。早餐可以補充肝糖儲備，為大腦和肌肉提供即時的能量，讓你感覺更有精神。許多研究表明，吃早餐的人比不吃早餐的人更有精神、更能集中注意力，並且在工作或學習中表現更好。長期不吃早餐還可能導致消化不良、胃痛以及新陳代謝變慢，影響整體健康。</p>
+          <p class="importance-research">根據多項營養學研究，吃早餐的人通常更容易控制體重。這是因為當你在早晨吃下充足的營養時，能更好地抑制食慾，降低在午餐和晚餐時暴飲暴食的可能性。同時，早餐也對心情有正向影響，有助於降低焦慮感和壓力，讓一天的開始更加平和。</p>
 
-    <!-- 購物車彈窗 -->
-    <div class="modal-background"></div>
-    <div id="cart-modal" class="modal">
-      <div class="modal-overlay" id="cart-modal-overlay">
-        <div class="modal-content">
-          <span id="close-cart" class="close">&times;</span>
-          <h2>購物車</h2>
-          <ul id="cart-modal-items"></ul>
-          <div id="cart-modal-total">
-            <strong>總計：</strong> $<span id="modal-total-price">0</span>
+          <div class="video-container">
+            <iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/jAlWCr5cIjE?si=9Zs7S1BC-tLZIne-&amp;start=11" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
-          <!-- 訂購人資訊表單 -->
-          <form id="order-info-form" class="order-form">
-            <h3 class="form-title">訂購人資訊</h3>
-            <div class="form-group">
-              <label for="order-name">姓名：</label>
-              <input type="text" id="order-name" name="order-name" required placeholder="姓名">
-            </div>
-            <div class="form-group">
-              <label for="order-phone">連絡電話：</label>
-              <input type="tel" id="order-phone" name="order-phone" required pattern="[0-9]{10}" placeholder="+886">
-            </div>
-            <div class="form-group">
-              <label for="order-time">預計取餐時間：</label>
-              <input type="time" id="order-time" name="order-time" required>
-            </div>
-            <button id="cart-submit" class="submit-button">送出訂單</button>
-          </form>          
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="script.js"></script>
-</body>
 
+          <h3 class="health-benefits-header">早餐的健康好處</h3>
+          <ul class="health-benefits-list">
+            <li class="benefit-item"><strong>提升新陳代謝：</strong> 早餐能啟動你的新陳代謝，幫助你更有效地燃燒卡路里，這對於想要減重或保持健康體重的人非常重要。如果你錯過早餐，身體會進入節能模式，降低新陳代謝率，進而減少能量的消耗。</li>
+            <li class="benefit-item"><strong>穩定血糖水平：</strong> 在早晨攝取適量的營養可以幫助穩定血糖，特別是對於需要長時間專注或體力消耗較大的人來說，穩定的血糖水平能讓你整天保持活力，並減少因血糖波動帶來的疲勞感和情緒低落。</li>
+            <li class="benefit-item"><strong>提升專注力：</strong> 健康的早餐有助於改善專注力和記憶力，使你在學校或工作中表現更佳。尤其是富含蛋白質和碳水化合物的早餐，能為大腦提供持續的能量來源，避免精神萎靡的情況。</li>
+          </ul>
+          <h3 class="good-breakfast-header">有哪些好的早餐選擇？</h3>
+          <p class="good-breakfast-paragraph">好的早餐應包含多樣化的營養成分，以確保身體獲得足夠的能量和營養來支持整天的活動。以下是一些健康且容易準備的早餐選擇：</p>
+          <ul class="good-breakfast-list">
+            <li class="breakfast-item"><strong>蛋白質：</strong> 如雞蛋、豆漿或堅果，可以提供持久的飽足感，幫助身體修復和建構組織。蛋白質也是維持血糖穩定的重要元素，尤其在早晨攝取可以保持持續的精力。</li>
+            <li class="breakfast-item"><strong>碳水化合物：</strong> 如全麥麵包、燕麥片或地瓜，這些複合碳水化合物能提供持續釋放的能量，不會像精緻糖類一樣引起血糖快速波動。同時，全穀類富含膳食纖維，有助於腸道健康。</li>
+            <li class="breakfast-item"><strong>水果和蔬菜：</strong> 添加水果或蔬菜，如香蕉、蘋果、菠菜等，有助於攝取足量的維生素、礦物質和膳食纖維，這些對於增強免疫力和促進消化系統健康都是不可或缺的。</li>
+            <li class="breakfast-item"><strong>乳製品：</strong> 牛奶或優格等乳製品是鈣質的良好來源，有助於骨骼和牙齒的健康。如果你不喝牛奶，可以選擇豆漿或其他富含鈣質的替代品。</li>
+          </ul>
+          <p class="final-note">從今天開始，記得別忘了吃營養豐富的早餐，讓自己精神滿滿地開始一天吧！健康的早餐不僅能讓你保持良好的體力和精神，還能幫助你建立更健康的飲食習慣。從小步驟開始，讓早餐成為你一天中的美好開端。</p>
+        </div>
+      </section>
+    </article>
+
+    <section id="menu-category" class="content-section hidden">
+    </section>
+    <section id="random-combo" class="content-section hidden">
+    </section>
+    <section id="query-results" class="content-section hidden">
+      <div class="orders-container">
+        <!-- 這裡會把你的查詢結果都秀出來 -->
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-background"></div>
+    <dialog id="cart-modal">
+      <div class="cart-modal-content">
+        <button id="close-cart" class="close-cart-btn">&times;</button>
+        <h2 class="cart-modal-title">購物車</h2>
+        <ul id="cart-items-list" class="cart-items-list"></ul>
+        <div id="cart-total-summary" class="cart-total-summary">
+          <strong>總計：</strong> $<span id="modal-total-price">0</span>
+        </div>
+        <form id="order-info-form-cart" class="order-info-form-cart">
+          <h3 class="cart-form-title">訂購人資訊</h3>
+          <div class="cart-form-group">
+            <label for="cart-order-name">姓名：</label>
+            <input type="text" id="cart-order-name" name="cart-order-name" required placeholder="姓名">
+          </div>
+          <div class="cart-form-group">
+            <label for="cart-order-phone">連絡電話：</label>
+            <input type="tel" id="cart-order-phone" name="cart-order-phone" required pattern="[0-9]{10}" placeholder="例如：0912345678">
+          </div>
+          <div class="cart-form-group">
+            <label for="cart-order-time">預計取餐時間：</label>
+            <input type="time" id="cart-order-time" name="cart-order-time" required>
+          </div>
+          <button id="cart-submit-btn" type="submit" class="cart-action-button">送出訂單</button>
+        </form>
+      </div>
+    </dialog>
+  </div>
+  <div id="hint" class="hint">已加入購物車</div>
+
+<script src="script.js"></script>
+</body>
 </html>
